@@ -40,6 +40,6 @@ button.addEventListener("click", async () => {
     if (data.title) {
         final_title_area.innerText = data.title;
     } else {
-        final_title_area.innerText = "CHECK YOUR URL AND TRY AGAIN";
+        final_title_area.innerText = "kuch toh bkd hai";
     }
 });
