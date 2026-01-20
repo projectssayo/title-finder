@@ -12,7 +12,7 @@ function print_current_min_second(msg = "") {
     console.log(`${msg}${now.getMinutes()}:${now.getSeconds()}`);
 }
 
-app.post("/send-url", async (req, res) => {
+aapp.post("/send-url", async (req, res) => {
     print_current_min_second("POST received at ");
 
     try {
@@ -24,9 +24,15 @@ app.post("/send-url", async (req, res) => {
 
         const api_url = `https://selenium-api-2.onrender.com/title?url=${encodeURIComponent(url)}`;
         const api_response = await fetch(api_url);
-        const data = await api_response.text();
 
-        const json_data = JSON.parse(data);
+        let json_data;
+        try {
+            json_data = await api_response.json(); // try parsing as JSON
+        } catch (err) {
+            console.log("API did not return JSON, response text:", await api_response.text());
+            return res.status(500).json({ error: "API did not return valid JSON" });
+        }
+
         console.log(`Received title: ${json_data.title}`.green);
 
         res.json(json_data);
