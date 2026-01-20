@@ -12,7 +12,7 @@ function print_current_min_second(msg = "") {
     console.log(`${msg}${now.getMinutes()}:${now.getSeconds()}`);
 }
 
-aapp.post("/send-url", async (req, res) => {
+app.post("/send-url", async (req, res) => {
     print_current_min_second("POST received at ");
 
     try {
