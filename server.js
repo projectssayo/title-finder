@@ -1,11 +1,12 @@
 import express from "express";
 import "colors";
+import fetch from "node-fetch";
 
 const app = express();
 const PORT = process.env.PORT || 8452;
 
 app.use(express.json());
-app.use(express.static(".")); // serve index.html, style.css, script.js
+app.use(express.static(".")); // serve index.html, script.js, style.css
 
 function print_current_min_second(msg = "") {
     const now = new Date();
@@ -25,17 +26,19 @@ app.post("/send-url", async (req, res) => {
         const api_url = `https://selenium-api-2.onrender.com/title?url=${encodeURIComponent(url)}`;
         const api_response = await fetch(api_url);
 
+        const data = await api_response.text(); // read body once
+
         let json_data;
         try {
-            json_data = await api_response.json(); // try parsing as JSON
+            json_data = JSON.parse(data); // try parsing as JSON
         } catch (err) {
-            console.log("API did not return JSON, response text:", await api_response.text());
+            console.log("API did not return JSON, response text:", data);
             return res.status(500).json({ error: "API did not return valid JSON" });
         }
 
         console.log(`Received title: ${json_data.title}`.green);
-
         res.json(json_data);
+
     } catch (err) {
         console.log(`Error: ${err}`.red);
         res.status(500).json({ error: "Failed to fetch title" });
