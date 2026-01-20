@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Title Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-container">
+        <h1><i class="fas fa-globe"></i> URL Title Finder</h1>
+        <p class="subtitle">
+            Paste a website link and instantly see the page title — simple, clean, and fast
+        </p>
+
+        <form id="urlForm">
+            <div class="input-container">
+                <div class="url-input">
+                    <i class="fas fa-link url-icon"></i>
+                    <input
+                        type="text"
+                        name="url"
+                        id="urlInput"
+                        placeholder="Paste a website URL here (for example: https://example.com)"
+                        required
+                    >
+                </div>
+                <div class="find-btn">
+                    <button type="button" id="find-title-button">
+                        <i class="fas fa-search"></i> Get Title
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="result-container">
+            <h2><i class="fas fa-file-alt"></i> Result</h2>
+            <div class="result-content">
+                <div class="url-display">
+                    <strong>PAGE TITLE:</strong>
+                    <span id="urlDisplay">
+                        The page title will appear here
+                    </span>
+                </div>
+                <div class="title-display" id="titleDisplay">
+                    Enter a URL above and click the button to fetch its title
+                </div>
+            </div>
+        </div>
+
+        <div class="examples">
+            <p>
+                Not sure what to try? Hover or click on any example below:
+            </p>
+            <div class="example-urls">
+                <div class="example-url">https://www.github.com</div>
+                <div class="example-url">https://stackoverflow.com</div>
+                <div class="example-url">https://developer.mozilla.org</div>
+                <div class="example-url">https://tailwindcss.com</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>
+                A small tool for quickly checking website titles
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
