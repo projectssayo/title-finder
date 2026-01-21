@@ -3,7 +3,7 @@ import path from "path";
 import "colors";
 
 const app = express();
-const PORT = 7450;
+const PORT = process.env.PORT || 8080;
 
 // Serve static files (CSS, JS, images)
 // Option 1: serve project root (works with your current index.html/style.css/script.js layout)
