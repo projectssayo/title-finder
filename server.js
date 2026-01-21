@@ -22,6 +22,11 @@ app.get("/", (req, res) => {
     console.log("Home page displayed".cyan.bgWhite);
 });
 
+app.get("/about", (req, res) => {
+    res.sendFile(path.resolve("about.html"));
+    console.log("about page displayed".cyan.bgWhite);
+});
+
 app.post("/send", async (req, res) => {
     let binary_data = "";
 
