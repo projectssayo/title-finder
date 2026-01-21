@@ -5,6 +5,13 @@ import "colors";
 const app = express();
 const PORT = 7450;
 
+// Serve static files (CSS, JS, images)
+// Option 1: serve project root (works with your current index.html/style.css/script.js layout)
+app.use(express.static(path.resolve(".")));
+
+// Option 2 (recommended): move static files to ./public and use:
+// app.use(express.static(path.join(process.cwd(), "public")));
+
 async function get_title(url) {
     const response = await fetch(`https://selenium-api-2.onrender.com/title?url=${encodeURIComponent(url)}`);
     const text = await response.text();
@@ -33,9 +40,18 @@ app.post("/send", async (req, res) => {
     req.on("data", chunk => binary_data += chunk);
 
     req.on("end", async () => {
-        const json_data = JSON.parse(binary_data);
-        const title = await get_title(json_data.input_url);
-        res.send(title);
+        try {
+            const json_data = JSON.parse(binary_data || "{}");
+            if (!json_data.input_url) {
+                res.status(400).send("Missing input_url");
+                return;
+            }
+            const title = await get_title(json_data.input_url);
+            res.send(title);
+        } catch (err) {
+            console.error("Error parsing JSON or fetching title:", err);
+            res.status(500).send("Internal server error");
+        }
     });
 });
 
