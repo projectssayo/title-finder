@@ -1,52 +1,39 @@
 import express from "express";
+import path from "path";
 import "colors";
-import fetch from "node-fetch";
 
 const app = express();
-const PORT = process.env.PORT || 8452;
+const PORT = 7450;
 
-app.use(express.json());
-app.use(express.static(".")); // serve index.html, script.js, style.css
+async function get_title(url) {
+    const response = await fetch(`https://selenium-api-2.onrender.com/title?url=${encodeURIComponent(url)}`);
+    const text = await response.text();
+    const data = JSON.parse(text);
 
-function print_current_min_second(msg = "") {
-    const now = new Date();
-    console.log(`${msg}${now.getMinutes()}:${now.getSeconds()}`);
-}
-
-app.post("/send-url", async (req, res) => {
-    print_current_min_second("POST received at ");
-
-    try {
-        const { url } = req.body;
-
-        if (!url) return res.status(400).json({ error: "URL missing" });
-
-        console.log(`Fetching title for: ${url}`.cyan);
-
-        const api_url = `https://selenium-api-2.onrender.com/title?url=${encodeURIComponent(url)}`;
-        const api_response = await fetch(api_url);
-
-        const data = await api_response.text(); // read body once
-
-        let json_data;
-        try {
-            json_data = JSON.parse(data); // try parsing as JSON
-        } catch (err) {
-            console.log("API did not return JSON, response text:", data);
-            return res.status(500).json({ error: "API did not return valid JSON" });
-        }
-
-        console.log(`Received title: ${json_data.title}`.green);
-        res.json(json_data);
-
-    } catch (err) {
-        console.log(`Error: ${err}`.red);
-        res.status(500).json({ error: "Failed to fetch title" });
+    if (!data.title) {
+        return "RETRY BY USING CORRECT URL e.g. https://google.com";
     }
 
-    print_current_min_second("Request completed at ");
+    return data.title;
+}
+
+app.get("/", (req, res) => {
+    res.sendFile(path.resolve("index.html"));
+    console.log("Home page displayed".cyan.bgWhite);
+});
+
+app.post("/send", async (req, res) => {
+    let binary_data = "";
+
+    req.on("data", chunk => binary_data += chunk);
+
+    req.on("end", async () => {
+        const json_data = JSON.parse(binary_data);
+        const title = await get_title(json_data.input_url);
+        res.send(title);
+    });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`.rainbow.bold);
+    console.log(`Website running on port ${PORT} at http://localhost:${PORT}`.rainbow.bold);
 });
